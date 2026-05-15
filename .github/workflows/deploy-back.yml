@@ -39,7 +39,7 @@ jobs:
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           
           script: |
-            # 1. Crear el archivo docker-compose.yml
+            # 1. Crear el archivo docker-compose.yml con Healthcheck dinámico
             cat << 'EOF' > docker-compose.yml
             version: '3.8'
             services:
@@ -52,7 +52,8 @@ jobs:
                   - SPRING_DATASOURCE_USERNAME=root
                   - SPRING_DATASOURCE_PASSWORD=root_password
                 depends_on:
-                  - db-mysql
+                  db-mysql:
+                    condition: service_healthy
               db-mysql:
                 image: mysql:8.0
                 environment:
@@ -60,6 +61,11 @@ jobs:
                   MYSQL_DATABASE: innovatech_db
                 volumes:
                   - db_data:/var/lib/mysql
+                healthcheck:
+                  test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p=root_password"]
+                  interval: 5s
+                  timeout: 5s
+                  retries: 10
             volumes:
               db_data:
             EOF
