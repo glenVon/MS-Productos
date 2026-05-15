@@ -73,3 +73,4 @@ jobs:
             sudo docker compose down || true
             sudo docker compose pull backend-api
             sudo docker compose up -d
+            sudo docker compose logs backend-api
