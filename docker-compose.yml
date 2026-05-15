@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend-api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/innovatech_db?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root_password
+    depends_on:
+      - db-mysql
+
+  db-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: innovatech_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql # Named Volume para persistencia (IE2)
+
+volumes:
+  db_data:
