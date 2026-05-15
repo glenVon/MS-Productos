@@ -39,6 +39,7 @@ jobs:
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           
           script: |
+            # 1. Crear el archivo docker-compose.yml
             cat << 'EOF' > docker-compose.yml
             version: '3.8'
             services:
@@ -63,7 +64,12 @@ jobs:
               db_data:
             EOF
             
-            # Cambiamos "docker compose" por "docker-compose"
-            sudo docker-compose down || true
-            sudo docker-compose pull backend-api
-            sudo docker-compose up -d
+            # 2. Instalar el plugin de Docker Compose en la máquina si no existe
+            sudo mkdir -p /usr/local/lib/docker/cli-plugins
+            sudo curl -SL https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+            sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+            
+            # 3. Desplegar los contenedores
+            sudo docker compose down || true
+            sudo docker compose pull backend-api
+            sudo docker compose up -d
