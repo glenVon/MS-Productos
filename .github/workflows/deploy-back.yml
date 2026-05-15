@@ -63,6 +63,7 @@ jobs:
               db_data:
             EOF
             
-            sudo docker compose down || true
-            sudo docker compose pull backend-api
-            sudo docker compose up -d
+            # Cambiamos "docker compose" por "docker-compose"
+            sudo docker-compose down || true
+            sudo docker-compose pull backend-api
+            sudo docker-compose up -d
